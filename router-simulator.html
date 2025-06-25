@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WaveRouter CLI Simulator</title>
+  <style>
+    body {
+      background-color: black;
+      color: #00FF00;
+      font-family: monospace;
+      padding: 10px;
+    }
+    #cli-output {
+      background-color: black;
+      padding: 10px;
+      border: 1px solid #555;
+      height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    #cli-input {
+      width: 100%;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 16px;
+      border: none;
+      outline: none;
+      background-color: #222;
+      color: #00FF00;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cli-output">D-WR-R1-1&gt;</div>
+  <input type="text" id="cli-input" autofocus placeholder="Type a command...">
+
+  <script>
+    const commands = {
+      "show ip interfaces brief": `
++---------------------------------------------------- IP INTERFACES BRIEF  ----------------------------------------------------+
+|                  |                    |                  |            |     Status     |              | Underlay             |
+| Interface        | IP Address         | VRF              | Origin     | Admin |  Oper  | Role         | Binding              |
++------------------+--------------------+------------------+------------+-------+--------+--------------+----------------------+
+| mgmtbr0          | 10.176.87.92/22    | default          | DYNAMIC    |   UP  |   UP   | management   | -                    |
+| IRB-1            | 10.1.5.1/30        | default          | STATIC     |   UP  |  DOWN  | data         | FD1                  |
++------------------+--------------------+------------------+------------+-------+--------+--------------+----------------------+`,
+
+      "show software": `
++--------------------------------------+
+| Housing Complex         | WaveRouter |
++-------------------------+------------+
+| Packages:               |            |
+|   saos-wr-10-09-02-0579 | activated  |
++-------------------------+------------+
++-------------------------------------+
+| Module                  | ctm-1/7   |
++-------------------------+-----------+
+| Packages:               |           |
+|   saos-wr-10-09-02-0579 | activated |
++-------------------------+-----------+
++-------------------------------------+
+| Module                  | fb-1/5    |
++-------------------------+-----------+
+| Packages:               |           |
+|   saos-wr-10-09-02-0579 | activated |
++-------------------------+-----------+
++-------------------------------------+
+| Module                  | ib-1/1    |
++-------------------------+-----------+
+| Packages:               |           |
+|   saos-wr-10-09-02-0579 | activated |
++-------------------------+-----------+`
+    };
+
+    const cliOutput = document.getElementById("cli-output");
+    const cliInput = document.getElementById("cli-input");
+
+    let prompt = "D-WR-R1-1>";
+
+    cliInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        const input = this.value.trim();
+        const lowerInput = input.toLowerCase();
+        const response = commands[lowerInput] || "% Unrecognized command";
+
+        cliOutput.innerHTML += `\n${prompt} ${input}\n${response}`;
+        this.value = "";
+        cliOutput.scrollTop = cliOutput.scrollHeight;
+      }
+    });
+  </script>
+
+</body>
+</html>
